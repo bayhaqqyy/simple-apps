@@ -7,6 +7,13 @@ services:
       - 3000:3000
     volumes:
       - simple-app:/apps
-
+  php:
+    image: phpmyadmin
+    restart: always
+    container_name: php
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=172.17.0.1
 volumes:
   simple-app:
