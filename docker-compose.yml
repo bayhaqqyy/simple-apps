@@ -1,0 +1,12 @@
+services:
+  my-web:
+    container_name: simple
+    image: apps
+    build: ./app
+    ports:
+      - 3000:3000
+    volumes:
+      - simple-app:/apps
+
+volumes:
+  simple-app:
