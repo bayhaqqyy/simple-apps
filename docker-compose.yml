@@ -1,7 +1,7 @@
 services:
   my-web:
     container_name: simple
-    image: elhaqy/apps:2.0
+    image: elhaqy/apps
     build: ./app
     ports:
       - 3000:3000
