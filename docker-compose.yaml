@@ -1,12 +1,8 @@
 services:
   apps:
-    build: ./apps
+    image: elhaqy/simple-apps:master
     ports:
       - "10000:3000"
     restart: always
     env_file: ./apps/.env
-    volumes:
-      - myapp:/apps
-volumes:
-  myapp:
-    external: true
+    container_name: simple-apps
