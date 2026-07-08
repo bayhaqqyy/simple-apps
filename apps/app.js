@@ -31,8 +31,9 @@ app.get('/users', (req, res, next) => {
   })
 });
 
-app.listen(process.env.APP_PORT, () => {
-  console.log(`Example app listening on port ${process.env.APP_PORT}`)
+const port = process.env.PORT || process.env.APP_PORT || 3000;
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
 })
 
 module.exports = app
