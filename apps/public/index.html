@@ -2,15 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training DevOps</title>
-    <link rel="stylesheet" href="stylesheet/style.css">
+    <title>Training DevOps Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheet/style.css">
 </head>
 <body>
-    <img class="logo" src="./images/images.jpg" alt="ivt-logo">
-     <h1>Belajar CI/CD</h1>
-        <p>Selamat datang di aplikasi sederhana untuk latihan DevOps</p>
-     <h1>Jenkins CI/CD</h1>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    
+    <div class="container">
+        <header class="header">
+            <img class="logo" src="./images/images.jpg" alt="ivt-logo" onerror="this.src='https://ui-avatars.com/api/?name=DevOps&background=0D8ABC&color=fff&rounded=true'">
+            <h1>Belajar CI/CD</h1>
+            <p>Selamat datang di aplikasi sederhana untuk latihan DevOps & Jenkins CI/CD</p>
+        </header>
+
+        <main class="cards-grid">
+            <a href="/app1" class="card">
+                <div class="card-icon">🚀</div>
+                <h2>Aplikasi 1</h2>
+                <p>Jelajahi fitur dan modul dari Aplikasi 1. Dibangun dengan antarmuka yang modern.</p>
+                <span class="btn">Buka App 1 &rarr;</span>
+            </a>
+            
+            <a href="/app2" class="card">
+                <div class="card-icon">⚡</div>
+                <h2>Aplikasi 2</h2>
+                <p>Lihat bagaimana Aplikasi 2 bekerja dengan integrasi yang mulus.</p>
+                <span class="btn">Buka App 2 &rarr;</span>
+            </a>
+            
+            <a href="/users" class="card">
+                <div class="card-icon">👥</div>
+                <h2>Data Database</h2>
+                <p>Uji koneksi dan ambil data dari database MariaDB menggunakan sql bawaan.</p>
+                <span class="btn">Lihat Data &rarr;</span>
+            </a>
+        </main>
+    </div>
 </body>
 </html>
