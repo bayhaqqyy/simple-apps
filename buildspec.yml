@@ -1,6 +1,5 @@
 version: 0.2
 
-
 phases:
   install:
     runtime-versions:
@@ -23,25 +22,33 @@ phases:
 
   pre_build:
     commands:
-      # [TEST PHASE] 
-      # Menjalankan tests dengan coverage di dalam folder apps
       - echo "Running tests and generating coverage..."
       - cd apps
       - npm test
       - npm run test:coverage || echo "Tests failed, but continuing for SonarQube analysis"
       - cd ..
 
-      # [TEST PHASE]
-      # Menjalankan SonarQube Analysis
       - echo "Running SonarQube analysis..."
       - sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
   build:
     commands:
-      # [BUILD PHASE]
-      # Mempersiapkan artifact (file-file) yang akan dikirim ke tahap Deploy
-      - echo "Preparing artifacts for Elastic Beanstalk deployment..."
-      - echo "Deployment artifact will only contain contents of the apps/ folder."
+      - echo "Building the Docker image..."
+      - cd apps
+      - docker build -t simple-app:latest .
+      - cd ..
+
+  post_build:
+    commands:
+      # =========================================
+      # 3. DEPLOY PHASE
+      # =========================================
+      - echo "Deploying / Pushing the Docker image..."
+      # (Opsional) Contoh perintah untuk push ke AWS ECR:
+      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      # - docker tag simple-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/simple-app:latest
+      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/simple-app:latest
+      - echo "Deploy phase completed."
 
 artifacts:
   files:
