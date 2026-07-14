@@ -1,15 +1,52 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      # Install SonarScanner CLI (Pre-requisite for CodeBuild)
+      - echo "Downloading SonarScanner..."
+      - export SONAR_SCANNER_VERSION=5.0.1.3006
+      - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+      - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+      - unzip -q $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+      
+      # =========================================
+      # STAGE: Build
+      # =========================================
+      - echo "--- STAGE: BUILD ---"
+      - cd apps
+      - npm install
+      - cd ..
+
+  pre_build:
+    commands:
+      # =========================================
+      # STAGE: Testing
+      # =========================================
+      - echo "--- STAGE: TESTING ---"
+      - cd apps
+      - npm test
+      - npm run test:coverage || echo "Tests failed, continuing for Sonar"
+      - cd ..
+
   build:
     commands:
-      - echo "========================================="
-      - echo "STAGE 1: BUILD (Docker Build)"
-      - echo "========================================="
-      - echo "Building the Docker image..."
-      - cd apps
-      - docker build -t simple-app:latest .
-      - cd ..
+      # =========================================
+      # STAGE: Code Review
+      # =========================================
+      - echo "--- STAGE: CODE REVIEW ---"
+      - sonar-scanner -Dsonar.projectKey=Simple-Apps -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+
+  post_build:
+    commands:
+      # =========================================
+      # STAGE: Deploy
+      # =========================================
+      - echo "--- STAGE: DEPLOY ---"
+      - docker-compose up --build -d
 
 artifacts:
   files:
