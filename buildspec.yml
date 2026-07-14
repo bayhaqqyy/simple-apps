@@ -19,6 +19,23 @@ phases:
 
   pre_build:
     commands:
+      - echo "Menyiapkan environment sebelum build..."
+
+  build:
+    commands:
+      # =========================================
+      # STAGE 1: BUILD
+      # =========================================
+      - echo "Building the Docker image..."
+      - cd apps
+      - docker build -t simple-app:latest .
+      - cd ..
+
+  post_build:
+    commands:
+      # =========================================
+      # STAGE 2: TEST (Termasuk SonarScanner)
+      # =========================================
       - echo "Running tests and generating coverage..."
       - cd apps
       - npm test
@@ -27,18 +44,9 @@ phases:
 
       - echo "Running SonarQube analysis..."
       - sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
-
-  build:
-    commands:
-      - echo "Building the Docker image..."
-      - cd apps
-      - docker build -t simple-app:latest .
-      - cd ..
-
-  post_build:
-    commands:
-      - echo "Deploying / Pushing the Docker image..."
-      - echo "Deploy phase completed."
+      
+      # (Opsional: Jika ada script deploy, bisa ditambahkan di akhir stage ini atau di pipeline yang berbeda)
+      - echo "Stage Test Selesai."
 
 artifacts:
   files:
