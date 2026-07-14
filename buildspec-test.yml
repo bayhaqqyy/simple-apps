@@ -1,0 +1,34 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing dependencies..."
+      - cd apps
+      - npm install
+      - cd ..
+      
+      - echo "Downloading SonarScanner..."
+      - export SONAR_SCANNER_VERSION=5.0.1.3006
+      - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+      - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+      - unzip -q $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+      - export SONAR_SCANNER_OPTS="-server"
+
+  build:
+    commands:
+      - echo "========================================="
+      - echo "STAGE 2: TEST & SONARQUBE"
+      - echo "========================================="
+      - echo "Running tests and generating coverage..."
+      - cd apps
+      - npm test
+      - npm run test:coverage || echo "Tests failed, but continuing for SonarQube analysis"
+      - cd ..
+
+      - echo "Running SonarQube analysis..."
+      - sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+      - echo "Test Phase Selesai."
