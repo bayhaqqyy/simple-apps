@@ -1,17 +1,14 @@
 version: 0.2
 
 phases:
-  build:
+  install:
     runtime-versions:
       nodejs: 18
     commands:
-      # Install dependencies inside apps folder
       - echo "Installing dependencies..."
       - cd apps
       - npm install
       - cd ..
-      
-      # Download and Install SonarScanner CLI
       - echo "Downloading SonarScanner..."
       - export SONAR_SCANNER_VERSION=5.0.1.3006
       - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
@@ -20,7 +17,7 @@ phases:
       - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
       - export SONAR_SCANNER_OPTS="-server"
 
-  test:
+  pre_build:
     commands:
       - echo "Running tests and generating coverage..."
       - cd apps
@@ -31,7 +28,7 @@ phases:
       - echo "Running SonarQube analysis..."
       - sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
-  Deploy:
+  build:
     commands:
       - echo "Building the Docker image..."
       - cd apps
@@ -40,14 +37,7 @@ phases:
 
   post_build:
     commands:
-      # =========================================
-      # 3. DEPLOY PHASE
-      # =========================================
       - echo "Deploying / Pushing the Docker image..."
-      # (Opsional) Contoh perintah untuk push ke AWS ECR:
-      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      # - docker tag simple-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/simple-app:latest
-      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/simple-app:latest
       - echo "Deploy phase completed."
 
 artifacts:
