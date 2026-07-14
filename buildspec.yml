@@ -1,7 +1,7 @@
 version: 0.2
 
 phases:
-  install:
+  build:
     runtime-versions:
       nodejs: 18
     commands:
@@ -20,7 +20,7 @@ phases:
       - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
       - export SONAR_SCANNER_OPTS="-server"
 
-  pre_build:
+  test:
     commands:
       - echo "Running tests and generating coverage..."
       - cd apps
@@ -31,7 +31,7 @@ phases:
       - echo "Running SonarQube analysis..."
       - sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
-  build:
+  Deploy:
     commands:
       - echo "Building the Docker image..."
       - cd apps
