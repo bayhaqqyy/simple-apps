@@ -16,7 +16,7 @@ phases:
       # =========================================
       # STAGE: Build
       # =========================================
-      - echo "--- STAGE: BUILD ---"
+      - echo "--- STAGE BUILD ---"
       - cd apps
       - npm install
       - cd ..
@@ -26,7 +26,7 @@ phases:
       # =========================================
       # STAGE: Testing
       # =========================================
-      - echo "--- STAGE: TESTING ---"
+      - echo "--- STAGE TESTING ---"
       - cd apps
       - npm test
       - npm run test:coverage || echo "Tests failed, continuing for Sonar"
@@ -37,7 +37,7 @@ phases:
       # =========================================
       # STAGE: Code Review
       # =========================================
-      - echo "--- STAGE: CODE REVIEW ---"
+      - echo "--- STAGE CODE REVIEW ---"
       - sonar-scanner -Dsonar.projectKey=Simple-Apps -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
   post_build:
@@ -45,7 +45,7 @@ phases:
       # =========================================
       # STAGE: Deploy
       # =========================================
-      - echo "--- STAGE: DEPLOY ---"
+      - echo "--- STAGE DEPLOY ---"
       - docker-compose up --build -d
 
 artifacts:
