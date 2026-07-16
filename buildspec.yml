@@ -40,14 +40,6 @@ phases:
       - echo "--- STAGE CODE REVIEW ---"
       - sonar-scanner -Dsonar.projectKey=Simple-Apps -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 
-  post_build:
-    commands:
-      # =========================================
-      # STAGE: Deploy
-      # =========================================
-      - echo "--- STAGE DEPLOY ---"
-      - docker-compose up --build -d
-
 artifacts:
   files:
     - '**/*'
