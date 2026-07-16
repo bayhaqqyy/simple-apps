@@ -6,12 +6,15 @@ phases:
       nodejs: 18
     commands:
       # Install SonarScanner CLI (Pre-requisite for CodeBuild)
-      - echo "Downloading SonarScanner..."
-      - export SONAR_SCANNER_VERSION=5.0.1.3006
-      - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
-      - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-      - unzip -q $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
-      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+      - |
+        if [ "$PIPELINE_STAGE" = "TEST" ]; then
+          echo "Downloading SonarScanner..."
+          export SONAR_SCANNER_VERSION=5.0.1.3006
+          export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+          curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
+          unzip -q $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+        fi
+      - export PATH=$HOME/.sonar/sonar-scanner-5.0.1.3006-linux/bin:$PATH
       
       # =========================================
       # STAGE: Build
@@ -26,19 +29,25 @@ phases:
       # =========================================
       # STAGE: Testing
       # =========================================
-      - echo "--- STAGE TESTING ---"
-      - cd apps
-      - npm test
-      - npm run test:coverage || echo "Tests failed, continuing for Sonar"
-      - cd ..
+      - |
+        if [ "$PIPELINE_STAGE" = "TEST" ]; then
+          echo "--- STAGE TESTING ---"
+          cd apps
+          npm test
+          npm run test:coverage || echo "Tests failed, continuing for Sonar"
+          cd ..
+        fi
 
   build:
     commands:
       # =========================================
       # STAGE: Code Review
       # =========================================
-      - echo "--- STAGE CODE REVIEW ---"
-      - sonar-scanner -Dsonar.projectKey=Simple-Apps -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+      - |
+        if [ "$PIPELINE_STAGE" = "TEST" ]; then
+          echo "--- STAGE CODE REVIEW ---"
+          sonar-scanner -Dsonar.projectKey=Simple-Apps -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+        fi
 
 artifacts:
   files:
